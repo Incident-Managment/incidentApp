@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Platform, StatusBar } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Header = () => {
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 44,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
