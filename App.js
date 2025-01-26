@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Analytics from './pages/Incidents';
 import Settings from './pages/Scanner';
+import ChatGlobal from './pages/ChatGlobal';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,11 @@ export default function App() {
         <Stack.Screen 
           name="Settings" 
           component={Settings} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="Chat" 
+          component={ChatGlobal} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

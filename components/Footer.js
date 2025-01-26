@@ -29,6 +29,10 @@ const Footer = () => {
         <MaterialCommunityIcons name="cog" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Scanner</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Chat')}>
+        <MaterialCommunityIcons name="cog" size={24} color={styles.navIcon.color} />
+        <Text style={styles.navText}>Chat</Text>
+      </TouchableOpacity>
     </View>
   );
 };
