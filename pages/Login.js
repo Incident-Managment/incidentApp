@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesome } from '@expo/vector-icons';
 import { login } from '../services/users.services';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Esquema de validación
 const validationSchema = Yup.object({
@@ -24,6 +25,10 @@ export default function Login({ navigation }) {
     try {
       const response = await login(values.email, values.password);
       if (response) {
+        // Guardar los datos del usuario en AsyncStorage
+        await AsyncStorage.setItem('user', JSON.stringify(response));
+        console.log('Datos del usuario guardados:', response);
+
         navigation.navigate('Home');
       }
     } catch (err) {
