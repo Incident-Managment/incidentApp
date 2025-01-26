@@ -14,11 +14,11 @@ const Footer = () => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Analytics')}>
         <MaterialCommunityIcons name="chart-bar" size={24} color={styles.navIcon.color} />
-        <Text style={styles.navText}>Analytics</Text>
+        <Text style={styles.navText}>Incidencias</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Settings')}>
         <MaterialCommunityIcons name="cog" size={24} color={styles.navIcon.color} />
-        <Text style={styles.navText}>Settings</Text>
+        <Text style={styles.navText}>Scanner</Text>
       </TouchableOpacity>
     </View>
   );

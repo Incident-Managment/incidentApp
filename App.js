@@ -5,9 +5,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './pages/Login';
 import Home from './pages/Home';
-import Analytics from './pages/Analytics';
-import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import Analytics from './pages/Incidents';
+import Settings from './pages/Scanner';
 
 const Stack = createStackNavigator();
 

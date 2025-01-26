@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  SafeAreaView,
   Platform,
   KeyboardAvoidingView,
 } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import ModalSelector from "../components/ModalSelector"
+import Header from "../components/Header"
+import Footer from "../components/Footer"
 
 const EnhancedIncidentForm = () => {
   const [title, setTitle] = useState("")
@@ -72,8 +73,9 @@ const EnhancedIncidentForm = () => {
   ]
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+    <View style={styles.container}>
+      <Header />
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.content}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Crear Nueva Incidencia</Text>
 
@@ -134,12 +136,12 @@ const EnhancedIncidentForm = () => {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Máquina</Text>
             <ModalSelector
-                options={machineOptions}
-                selectedValue={category}
-                onValueChange={setCategory}
-                placeholder="Seleccione una máquina"
+              options={machineOptions}
+              selectedValue={category}
+              onValueChange={setCategory}
+              placeholder="Seleccione una máquina"
             />
-            </View>
+          </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Fase de la producción</Text>
@@ -164,80 +166,80 @@ const EnhancedIncidentForm = () => {
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+      <Footer />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-    safeArea: {
-      flex: 1,
-      backgroundColor: "#f5efe7",
-    },
-    container: {
-      flex: 1,
-      padding: 20,
-    },
-    title: {
-      fontSize: 28,
-      fontWeight: "bold",
-      marginBottom: 24,
-      color: "#3d3d3d",
-      textAlign: "center",
-    },
-    inputGroup: {
-      marginBottom: 20,
-    },
-    label: {
-      fontSize: 16,
-      marginBottom: 8,
-      color: "#3d3d3d",
-      fontWeight: "600",
-    },
-    input: {
-      height: 50,
-      borderColor: "#D8C4B6",
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingHorizontal: 12,
-      fontSize: 16,
-      backgroundColor: "#fffaec",
-      color: "#3d3d3d",
-    },
-    textArea: {
-      height: 100,
-      textAlignVertical: "top",
-      paddingTop: 12,
-    },
-    imagePicker: {
-      backgroundColor: "#578e7e",
-      padding: 12,
-      borderRadius: 8,
-      alignItems: "center",
-    },
-    imagePickerText: {
-      color: "#fff",
-      fontSize: 16,
-      fontWeight: "600",
-    },
-    image: {
-      width: "100%",
-      height: 200,
-      borderRadius: 8,
-      marginTop: 12,
-    },
-    submitButton: {
-      backgroundColor: "#578e7e",
-      padding: 16,
-      borderRadius: 8,
-      alignItems: "center",
-      marginTop: 20,
-    },
-    submitButtonText: {
-      color: "#fff",
-      fontSize: 18,
-      fontWeight: "bold",
-    },
-  });
+  container: {
+    flex: 1,
+    backgroundColor: "#f5efe7",
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 24,
+    color: "#3d3d3d",
+    textAlign: "center",
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: "#3d3d3d",
+    fontWeight: "600",
+  },
+  input: {
+    height: 50,
+    borderColor: "#D8C4B6",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    backgroundColor: "#fffaec",
+    color: "#3d3d3d",
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
+    paddingTop: 12,
+  },
+  imagePicker: {
+    backgroundColor: "#578e7e",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  imagePickerText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+    marginTop: 12,
+  },
+  submitButton: {
+    backgroundColor: "#578e7e",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+})
 
 export default EnhancedIncidentForm
-

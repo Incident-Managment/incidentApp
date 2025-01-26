@@ -11,7 +11,7 @@ const Profile = () => {
                 const user = await AsyncStorage.getItem('user');
                 if (user) {
                     const userData = JSON.parse(user);
-                    setUserName(userData.user.name); // Acceder a user.name
+                    setUserName(userData.user.name);
                 }
             } catch (error) {
                 console.error('Failed to fetch user name:', error);
