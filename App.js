@@ -1,8 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
@@ -18,7 +16,9 @@ export default function App() {
         <Stack.Screen 
           name="Login" 
           component={Login} 
-          options={{ headerShown: false }} 
+          options={{ 
+            headerShown: false,
+          }} 
         />
         <Stack.Screen 
           name="Home" 
@@ -28,7 +28,17 @@ export default function App() {
         <Stack.Screen
           name="Profile"
           component={Profile}
-          options={{ headerShown: false }}
+          options={{ 
+            headerShown: true,
+            title: 'Perfil',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 30,
+            },
+            headerTitleAlign: 'center',
+            headerTransparent: true,
+            headerBackTitle: '', // Cambia el texto de retroceso en iOS
+          }}
         />
         <Stack.Screen 
           name="Analytics" 
@@ -41,16 +51,6 @@ export default function App() {
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>
-      <StatusBar style="auto" />
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

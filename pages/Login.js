@@ -29,7 +29,8 @@ export default function Login({ navigation }) {
         await AsyncStorage.setItem('user', JSON.stringify(response));
         console.log('Datos del usuario guardados:', response);
 
-        navigation.navigate('Home');
+        // Navegar a Home usando replace
+        navigation.replace('Home');
       }
     } catch (err) {
       setErrors({ general: 'Verifica tus credenciales.' });
