@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,11 @@ export default function App() {
           name="Home" 
           component={Home} 
           options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="Analytics" 

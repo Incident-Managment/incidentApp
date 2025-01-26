@@ -1,13 +1,20 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Platform, StatusBar } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
+  const navigation = useNavigation();
+
+  const handleProfilePress = () => {
+    navigation.navigate('Profile'); // Asegúrate de que 'Profile' sea el nombre correcto de la ruta
+  };
+
   return (
     <View style={styles.header}>
       <Text style={styles.title}>Dashboard</Text>
-      <TouchableOpacity>
-        <MaterialCommunityIcons name="account-circle" size={30} color={styles.icon.color} />
+      <TouchableOpacity onPress={handleProfilePress}>
+        <MaterialCommunityIcons name="account-circle" size={39} color={styles.icon.color} />
       </TouchableOpacity>
     </View>
   );
@@ -30,7 +37,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   icon: {
-    color: "#333",
+    color: "#578e7e",
   },
 });
 
