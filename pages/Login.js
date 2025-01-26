@@ -49,7 +49,7 @@ export default function Login({ navigation }) {
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
             <View style={styles.form}>
               <TextInput
-                placeholder="Email"
+                placeholder="Correo electrónico. Ej: alguien@gmail.com"
                 placeholderTextColor="#D8C4B6"
                 style={[styles.input, touched.email && errors.email ? styles.inputError : null]}
                 onChangeText={handleChange('email')}
@@ -64,7 +64,7 @@ export default function Login({ navigation }) {
 
               <View style={[styles.passwordContainer, touched.password && errors.password ? styles.inputError : null]}>
                 <TextInput
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   placeholderTextColor="#D8C4B6"
                   style={styles.inputPassword}
                   onChangeText={handleChange('password')}
@@ -93,7 +93,7 @@ export default function Login({ navigation }) {
                 onPress={handleSubmit}
                 disabled={isSubmitting}
               >
-                <Text style={styles.buttonText}>{isSubmitting ? 'Iniciando...' : 'Login'}</Text>
+                <Text style={styles.buttonText}>{isSubmitting ? 'Iniciando Sesión...' : 'Iniciar Sesión'}</Text>
               </TouchableOpacity>
             </View>
           )}
