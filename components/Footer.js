@@ -1,22 +1,31 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 
 const Footer = () => {
   const navigation = useNavigation();
 
+  const navigateTo = (routeName) => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: routeName }],
+      })
+    );
+  };
+
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Home')}>
         <MaterialCommunityIcons name="home" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Analytics')}>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Analytics')}>
         <MaterialCommunityIcons name="chart-bar" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Incidencias</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Settings')}>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Settings')}>
         <MaterialCommunityIcons name="cog" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Scanner</Text>
       </TouchableOpacity>
@@ -41,9 +50,8 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   navText: {
-    fontSize: 12,
     color: "#333",
-    marginTop: 4,
+    fontSize: 12,
   },
 });
 
