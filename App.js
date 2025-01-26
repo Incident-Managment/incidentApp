@@ -5,6 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +22,16 @@ export default function App() {
         <Stack.Screen 
           name="Home" 
           component={Home} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="Analytics" 
+          component={Analytics} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="Settings" 
+          component={Settings} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>
