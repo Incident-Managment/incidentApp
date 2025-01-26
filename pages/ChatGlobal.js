@@ -7,6 +7,21 @@ const ChatGlobal = () => {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
 
+  const sendMessage = async () => {
+    try {
+      const result = await axios.post(
+        'http://192.168.1.68:3000/api/slack/sendMessage',
+        {
+          channel: 'C08A4JGLBBQ',  // El ID del canal que deseas usar
+          text: message,           // El mensaje a enviar
+        }
+      );
+      setResponse(result.data.message || 'Message sent!'); // Respuesta del servidor
+    } catch (error) {
+      setResponse('Error sending message');
+      console.error(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
