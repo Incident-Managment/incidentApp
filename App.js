@@ -6,7 +6,8 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Analytics from './pages/Incidents';
 import Settings from './pages/Scanner';
-import ChatGlobal from './pages/ChatGlobal';
+import ConversationsList from './pages/ConversationsList';
+import ChatScreen from './pages/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -52,9 +53,24 @@ export default function App() {
           options={{ headerShown: false }} 
         />
         <Stack.Screen 
-          name="Chat" 
-          component={ChatGlobal} 
-          options={{ headerShown: false }} 
+          name="ConversationsList" 
+          component={ConversationsList} 
+          options={{ 
+            headerShown: true,
+            title: 'Chat',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 30,
+            },
+          }} 
+        />
+        <Stack.Screen 
+          name="ChatScreen" 
+          component={ChatScreen} 
+          options={({ route }) => ({ 
+            headerShown: true,
+            title: route.params.name,
+          })} 
         />
       </Stack.Navigator>
     </NavigationContainer>

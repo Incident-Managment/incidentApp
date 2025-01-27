@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import { useNavigation, CommonActions } from '@react-navigation/native';
 
 const Footer = () => {
@@ -22,15 +23,15 @@ const Footer = () => {
         <Text style={styles.navText}>Home</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Analytics')}>
-        <MaterialCommunityIcons name="chart-bar" size={24} color={styles.navIcon.color} />
+        <MaterialCommunityIcons name="clipboard-alert" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Incidencias</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Settings')}>
-        <MaterialCommunityIcons name="cog" size={24} color={styles.navIcon.color} />
+        <MaterialCommunityIcons name="qrcode-scan" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Scanner</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Chat')}>
-        <MaterialCommunityIcons name="cog" size={24} color={styles.navIcon.color} />
+      <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('ConversationsList')}>
+        <MaterialCommunityIcons name="chat-alert" size={24} color={styles.navIcon.color} />
         <Text style={styles.navText}>Chat</Text>
       </TouchableOpacity>
     </View>
