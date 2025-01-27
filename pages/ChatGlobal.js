@@ -10,7 +10,7 @@ const ChatGlobal = () => {
   const sendMessage = async () => {
     try {
       const result = await axios.post(
-        'http://192.168.1.68:3000/api/slack/sendMessage',
+        'http://192.168.3.54:3000/api/slack/sendMessage',
         {
           channel: 'C08A4JGLBBQ',  // El ID del canal que deseas usar
           text: message,           // El mensaje a enviar
