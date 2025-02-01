@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const baseURL = process.env.VITE_API_URL || 'http://192.168.1.76:3000/api/';
+export const baseURL = process.env.VITE_API_URL || 'http://192.168.0.110:3000/api/';
 
 export const fetchData = async (endpoint) => {
   try {
