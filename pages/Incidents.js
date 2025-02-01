@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import * as ImagePicker from "expo-image-picker"
 import ModalSelector from "../components/ModalSelector"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import axios from "axios"
 
 const EnhancedIncidentForm = () => {
   const [title, setTitle] = useState("")
@@ -23,6 +25,44 @@ const EnhancedIncidentForm = () => {
   const [category, setCategory] = useState("")
   const [phase, setPhase] = useState("")
   const [image, setImage] = useState(null)
+  const [statusOptions, setStatusOptions] = useState([])
+  const [priorityOptions, setPriorityOptions] = useState([])
+  const [categoryOptions, setCategoryOptions] = useState([])
+  const [phaseOptions, setPhaseOptions] = useState([])
+  const [company, setCompany] = useState("")
+  const [machine, setMachine] = useState("")
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          const companyId = parsedUser.user.company.id || 'Compañía no disponible';
+          console.log('Company ID:', companyId);
+          setCompany(companyId);
+
+          const statusResponse = await axios.get(`http://192.168.0.19:3000/api/statusesByCompany?companyId=${companyId}`);
+          setStatusOptions(statusResponse.data.map(option => ({ label: option.name, value: option.id, key: option.id })));
+
+          const priorityResponse = await axios.get(`http://192.168.0.19:3000/api/prioritiesByCompany?companyId=${companyId}`);
+          setPriorityOptions(priorityResponse.data.map(option => ({ label: option.name, value: option.id, key: option.id })));
+
+          const categoryResponse = await axios.get(`http://192.168.0.19:3000/api/categoriesByCompany?companyId=${companyId}`);
+          setCategoryOptions(categoryResponse.data.map(option => ({ label: option.name, value: option.id, key: option.id })));
+
+          const phaseResponse = await axios.get(`http://192.168.0.19:3000/api/productionPhasesByCompany?companyId=${companyId}`);
+          setPhaseOptions(phaseResponse.data.map(option => ({ label: option.name, value: option.id, key: option.id })));
+
+          const machineResponse = await axios.get(`http://192.168.0.19:3000/api/machinesByCompany?companyId=${companyId}`);
+          setMachine(machineResponse.data.map(option => ({ label: option.name, value: option.id, key: option.id })));
+        }
+      } catch (error) {
+        console.error("Error al obtener los datos del usuario:", error);
+      }
+    };
+
+    fetchOptions();
+  }, [])
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -41,36 +81,6 @@ const EnhancedIncidentForm = () => {
     // Handle form submission
     console.log({ title, description, status, priority, category, phase, image })
   }
-
-  const statusOptions = [
-    { label: "Abierto", value: "abierto" },
-    { label: "En progreso", value: "en_progreso" },
-    { label: "Cerrado", value: "cerrado" },
-  ]
-
-  const priorityOptions = [
-    { label: "Alta", value: "alta" },
-    { label: "Media", value: "media" },
-    { label: "Baja", value: "baja" },
-  ]
-
-  const categoryOptions = [
-    { label: "Software", value: "software" },
-    { label: "Hardware", value: "hardware" },
-    { label: "Red", value: "red" },
-  ]
-
-  const phaseOptions = [
-    { label: "Desarrollo", value: "desarrollo" },
-    { label: "Pruebas", value: "pruebas" },
-    { label: "Producción", value: "producción" },
-  ]
-
-  const machineOptions = [
-    { label: "Máquina 1", value: "maquina_1" },
-    { label: "Máquina 2", value: "maquina_2" },
-    { label: "Máquina 3", value: "maquina_3" },
-  ]
 
   return (
     <View style={styles.container}>
@@ -134,22 +144,22 @@ const EnhancedIncidentForm = () => {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Máquina</Text>
-            <ModalSelector
-              options={machineOptions}
-              selectedValue={category}
-              onValueChange={setCategory}
-              placeholder="Seleccione una máquina"
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
             <Text style={styles.label}>Fase de la producción</Text>
             <ModalSelector
               options={phaseOptions}
               selectedValue={phase}
               onValueChange={setPhase}
               placeholder="Seleccione una fase"
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Máquina</Text>
+            <ModalSelector
+              options={machine}
+              selectedValue={machine}
+              onValueChange={setMachine}
+              placeholder="Seleccione una máquina"
             />
           </View>
 
