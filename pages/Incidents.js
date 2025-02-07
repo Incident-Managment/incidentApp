@@ -32,6 +32,7 @@ const EnhancedIncidentForm = () => {
   const [company, setCompany] = useState("");
   const [machine, setMachines] = useState("");
   const [machineOptions, setMachineOptions] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -41,6 +42,7 @@ const EnhancedIncidentForm = () => {
           const parsedUser = JSON.parse(user);
           const companyId = parsedUser.user.company.id || "Compañía no disponible";
           setCompany(companyId);
+          setUserId(parsedUser.user.id);
 
           const endpoints = [
             { url: `statusesByCompany`, setter: setStatusOptions },
@@ -52,7 +54,7 @@ const EnhancedIncidentForm = () => {
 
           for (const { url, setter } of endpoints) {
             const response = await axios.get(
-              `http://192.168.0.110:3000/api/${url}?companyId=${companyId}`
+              `https://back.incidentstream.cloud//api/${url}?companyId=${companyId}`
             );
             setter(response.data.map(option => ({
               label: option.name,
@@ -80,27 +82,36 @@ const EnhancedIncidentForm = () => {
     }
   };
 
-  const handleSubmit = () => {
-    const data = new FormData();
-    data.append("title", title);
-    data.append("description", description);
-    data.append("statusId", status);
-    data.append("priorityId", priority);
-    data.append("categoryId", category);
-    data.append("productionPhaseId", phase);
-    data.append("machineId", machine);
-    data.append("companyId", company);
-    if (image) {
-      const uriParts = image.split(".");
-      const fileType = uriParts[uriParts.length - 1];
-      data.append("image", {
-        uri: image,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
-    }
+  const handleSubmit = async () => {
+    const data = {
+      title,
+      description,
+      status_id: status,
+      priority_id: priority,
+      category_id: category,
+      production_phase_id: phase,
+      machine_id: machine,
+      company_id: company,
+      user_id: userId,
+      creation_date: new Date().toISOString(),
+      update_date: new Date().toISOString(),
+      image_cloudinary: image ? { url: image } : null,
+    };
 
-    axios.post("http://http://192.168.0.110:3000/api/incidents/create", data);
+    try {
+      const response = await axios.post("https://back.incidentstream.cloud/api/incidents/create", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        console.log("Incidencia creada exitosamente");
+      } else {
+        console.error("Error al crear la incidencia:", response.data);
+      }
+    } catch (error) {
+      console.error("Error al crear la incidencia:", error.response ? error.response.data : error.message);
+    }
   };
 
   return (
