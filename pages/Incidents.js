@@ -45,17 +45,18 @@ const EnhancedIncidentForm = () => {
           setUserId(parsedUser.user.id);
 
           const endpoints = [
-            { url: `statuses`, setter: setStatusOptions }, // Cambiado a `statuses`
-            { url: `prioritiesByCompany`, setter: setPriorityOptions },
-            { url: `categoriesByCompany`, setter: setCategoryOptions },
-            { url: `productionPhasesByCompany`, setter: setPhaseOptions },
-            { url: `machines/getMachinesByCompany`, setter: setMachineOptions },
+            { url: `statuses/getStatuses`, setter: setStatusOptions, useCompanyId: false }, // Cambiado a `statuses`
+            { url: `prioritiesByCompany`, setter: setPriorityOptions, useCompanyId: true },
+            { url: `categoriesByCompany`, setter: setCategoryOptions, useCompanyId: true },
+            { url: `productionPhasesByCompany`, setter: setPhaseOptions, useCompanyId: true },
+            { url: `machines/getMachinesByCompany`, setter: setMachineOptions, useCompanyId: true },
           ];
 
-          for (const { url, setter } of endpoints) {
-            const response = await axios.get(
-              `https://back.incidentstream.cloud/api/${url}?companyId=${companyId}`
-            );
+          for (const { url, setter, useCompanyId } of endpoints) {
+            const apiUrl = useCompanyId 
+              ? `https://back.incidentstream.cloud/api/${url}?companyId=${companyId}`
+              : `https://back.incidentstream.cloud/api/${url}`;
+            const response = await axios.get(apiUrl);
             setter(response.data.map(option => ({
               label: option.name,
               value: option.id,
