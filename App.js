@@ -5,9 +5,10 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Analytics from './pages/Incidents';
-import Settings from './pages/Scanner';
 import ConversationsList from './pages/ConversationsList';
 import ChatScreen from './pages/ChatScreen';
+import TechnicianScanner from './pages/Scanner';
+import IncidenciasList from './pages/IncidenView';
 
 const Stack = createStackNavigator();
 
@@ -48,11 +49,23 @@ export default function App() {
           options={{ headerShown: false }} 
         />
         <Stack.Screen 
-          name="Settings" 
-          component={Settings} 
+          name="Scanner" 
+          component={TechnicianScanner} 
           options={{ headerShown: false }} 
         />
-        <Stack.Screen 
+        <Stack.Screen
+          name="ViewIncident"
+          component={IncidenciasList}
+          options={{ 
+            headerShown: true,
+            title: 'Incidencias',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 30,
+            },
+          }}
+        />
+        {/* <Stack.Screen 
           name="ConversationsList" 
           component={ConversationsList} 
           options={{ 
@@ -71,7 +84,7 @@ export default function App() {
             headerShown: true,
             title: route.params.name,
           })} 
-        />
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

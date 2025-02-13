@@ -38,19 +38,15 @@ const Footer = () => {
       <View style={styles.footer}>
         <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Home')}>
           <MaterialCommunityIcons name="home" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Home</Text>
+          <Text style={styles.navText}>Inicio</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Analytics')}>
-          <MaterialCommunityIcons name="clipboard-alert" size={24} color={styles.navIcon.color} />
+          <MaterialCommunityIcons name="file-upload" size={24} color={styles.navIcon.color} />
           <Text style={styles.navText}>Incidencias</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Settings')}>
-          <MaterialCommunityIcons name="qrcode-scan" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Scanner</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('ConversationsList')}>
-          <MaterialCommunityIcons name="chat-alert" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Chat</Text>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('ViewIncident')}>
+          <MaterialCommunityIcons name="list-status" size={24} color={styles.navIcon.color} />
+          <Text style={styles.navText}>Ver Incidencias</Text>
         </TouchableOpacity>
       </View>
     );
@@ -59,9 +55,9 @@ const Footer = () => {
       <View style={styles.footer}>
         <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Home')}>
           <MaterialCommunityIcons name="home" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Home</Text>
+          <Text style={styles.navText}>Inicio</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Settings')}>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Scanner')}>
           <MaterialCommunityIcons name="qrcode-scan" size={24} color={styles.navIcon.color} />
           <Text style={styles.navText}>Scanner</Text>
         </TouchableOpacity>
@@ -76,11 +72,7 @@ const Footer = () => {
       <View style={styles.footer}>
         <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Home')}>
           <MaterialCommunityIcons name="home" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Settings')}>
-          <MaterialCommunityIcons name="qrcode-scan" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Scanner</Text>
+          <Text style={styles.navText}>Inicio</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('ConversationsList')}>
           <MaterialCommunityIcons name="chat-alert" size={24} color={styles.navIcon.color} />
