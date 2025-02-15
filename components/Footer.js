@@ -57,13 +57,9 @@ const Footer = () => {
           <MaterialCommunityIcons name="home" size={24} color={styles.navIcon.color} />
           <Text style={styles.navText}>Inicio</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('Scanner')}>
-          <MaterialCommunityIcons name="qrcode-scan" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Scanner</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('ConversationsList')}>
-          <MaterialCommunityIcons name="chat-alert" size={24} color={styles.navIcon.color} />
-          <Text style={styles.navText}>Chat</Text>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigateTo('ViewIncidentTechnician')}>
+          <MaterialCommunityIcons name="list-status" size={24} color={styles.navIcon.color} />
+          <Text style={styles.navText}>Ver Incidencias</Text>
         </TouchableOpacity>
       </View>
     );

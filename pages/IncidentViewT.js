@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Footer from '../components/Footer';
 import ModalSelector from '../components/ModalSelector';
 
-const IncidenciasList = () => {
+const IncidenciasListTechnician = () => {
   const [incidencias, setIncidencias] = useState([]);
   const [filteredIncidencias, setFilteredIncidencias] = useState([]);
   const [selectedPriority, setSelectedPriority] = useState('');
@@ -18,9 +18,9 @@ const IncidenciasList = () => {
         const user = await AsyncStorage.getItem('user');
         if (user) {
           const parsedUser = JSON.parse(user);
-          const companyId = parsedUser.user.company.id;
+          const userId = parsedUser.user.id;
 
-          const response = await fetch(`https://back.incidentstream.cloud/api/incidents/incidentsByCompany?companyId=${companyId}`);
+          const response = await fetch(`https://back.incidentstream.cloud/api/assigned_tasks/findAssignedTasksByUserId?userId=${userId}`);
           const data = await response.json();
           setIncidencias(data);
           setFilteredIncidencias(data);
@@ -41,27 +41,27 @@ const IncidenciasList = () => {
     let filtered = incidencias;
 
     if (selectedPriority) {
-      filtered = filtered.filter(item => item.priority.name === selectedPriority);
+      filtered = filtered.filter(item => item.incident.priority && item.incident.priority.name === selectedPriority);
     }
 
     if (selectedStatus) {
-      filtered = filtered.filter(item => item.status.name === selectedStatus);
+      filtered = filtered.filter(item => item.incident.status && item.incident.status.name === selectedStatus);
     }
 
     setFilteredIncidencias(filtered);
   };
 
   const renderItem = ({ item }) => (
-    <View
-      style={[styles.card, getPriorityStyle(item.priority.name)]}
-      onPress={() => navigation.navigate('DetalleIncidencia', { incidencia: item })}
+    <TouchableOpacity
+      style={[styles.card, getPriorityStyle(item.incident.priority ? item.incident.priority.name : '')]}
+      onPress={() => navigation.navigate('Scanner', { incidencia: item.incident })}
     >
-      <Text style={styles.titulo}>{item.title}</Text>
-      <Text style={styles.descripcion}>{item.description}</Text>
-      <Text style={styles.info}>Responsable: {item.user.name}</Text>
-      <Text style={styles.info}>Categoría: {item.category.name}</Text>
-      <Text style={[styles.estado, getEstadoStyle(item.status.name)]}>{item.status.name}</Text>
-    </View>
+      <Text style={styles.titulo}>{item.incident.title}</Text>
+      <Text style={styles.descripcion}>{item.incident.description}</Text>
+      <Text style={styles.info}>Responsable: {item.incident.user ? item.incident.user.name : 'N/A'}</Text>
+      <Text style={styles.info}>Categoría: {item.incident.category ? item.incident.category.name : 'N/A'}</Text>
+      <Text style={[styles.estado, getEstadoStyle(item.incident.status ? item.incident.status.name : '')]}>{item.incident.status ? item.incident.status.name : 'N/A'}</Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -94,6 +94,7 @@ const IncidenciasList = () => {
           placeholder="Seleccionar Estado"
         />
       </View>
+      
       <Footer />
     </View>
   );
@@ -157,4 +158,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default IncidenciasList;
+export default IncidenciasListTechnician;
