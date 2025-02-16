@@ -54,11 +54,11 @@ const IncidenciasListTechnician = () => {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.card, getPriorityStyle(item.incident.priority ? item.incident.priority.name : '')]}
-      onPress={() => navigation.navigate('Scanner', { incidencia: item.incident })}
+      onPress={() => navigation.navigate('Scanner', { incidentId: item.incident.id })}
     >
       <Text style={styles.titulo}>{item.incident.title}</Text>
       <Text style={styles.descripcion}>{item.incident.description}</Text>
-      <Text style={styles.info}>Responsable: {item.incident.user ? item.incident.user.name : 'N/A'}</Text>
+      <Text style={styles.info}>Responsable: {item.user ? item.user.name : 'N/A'}</Text>
       <Text style={styles.info}>Categoría: {item.incident.category ? item.incident.category.name : 'N/A'}</Text>
       <Text style={[styles.estado, getEstadoStyle(item.incident.status ? item.incident.status.name : '')]}>{item.incident.status ? item.incident.status.name : 'N/A'}</Text>
     </TouchableOpacity>
@@ -94,7 +94,6 @@ const IncidenciasListTechnician = () => {
           placeholder="Seleccionar Estado"
         />
       </View>
-      
       <Footer />
     </View>
   );

@@ -50,7 +50,15 @@ export default function App() {
         <Stack.Screen 
           name="Scanner" 
           component={TechnicianScanner} 
-          options={{ headerShown: false }} 
+          options={{ 
+            headerShown: true,
+            title: 'Escáner',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 30,
+            },
+            headerBackTitle: '', // Cambia el texto de retroceso en iOS
+          }} 
         />
         <Stack.Screen
           name="ViewIncident"
