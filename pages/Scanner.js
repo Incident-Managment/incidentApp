@@ -3,8 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert 
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from '@react-navigation/native';
 import { CameraView, Camera } from "expo-camera";
-
-import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const TechnicianScanner = () => {
@@ -81,10 +79,9 @@ const TechnicianScanner = () => {
             Alert.alert("Éxito", "La incidencia ha sido actualizada correctamente.");
           } else {
             Alert.alert("Error", "Hubo un problema al actualizar la incidencia.");
+            setScanned(false);
           }
         } catch (error) {
-          console.error("Error al actualizar la incidencia:", error);
-          Alert.alert("Error", "Hubo un problema al actualizar la incidencia.");
         }
       };
   
