@@ -149,6 +149,7 @@ const TechnicianScanner = () => {
             <Text style={styles.incidentText}>Título: {incidencia?.title}</Text>
             <Text style={styles.incidentText}>Descripción: {incidencia?.description}</Text>
             <Text style={styles.incidentText}>Estado: {incidencia?.status?.name}</Text>
+            <Text style={styles.incidentText}>Company: {incidencia?.company?.name}</Text>
             <Text style={styles.incidentText}>Prioridad: {incidencia?.priority?.name}</Text>
             <Text style={styles.incidentText}>Categoría: {incidencia?.category?.name}</Text>
             <Text style={styles.incidentText}>Máquina: {incidencia?.machine?.name}</Text>
