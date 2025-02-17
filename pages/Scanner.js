@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useRoute } from '@react-navigation/native';
+import { CameraView, Camera } from "expo-camera";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useRoute } from '@react-navigation/native';
 
 const TechnicianScanner = () => {
   const [machineId, setMachineId] = useState("");
   const [status, setStatus] = useState("Pendiente");
   const [scanned, setScanned] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
   const [incidencia, setIncidencia] = useState(null);
-  const [permission, requestPermission] = useCameraPermissions();
   const route = useRoute();
   const incidentId = route?.params?.incidentId;
+  const [allowQR, setAllowQR] = useState(true);
 
+  // Solicitar permisos de la cámara
   useEffect(() => {
-    if (permission?.status !== "granted") {
-      requestPermission();
-    }
-  }, [permission]);
+    const getCameraPermissions = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    };
 
+    getCameraPermissions();
+  }, []);
+
+  // Obtener datos de la incidencia
   useEffect(() => {
     if (incidentId) {
       const fetchIncidencia = async () => {
@@ -30,7 +37,7 @@ const TechnicianScanner = () => {
           const data = await response.json();
           setIncidencia(data);
         } catch (error) {
-          console.error('Error al obtener la incidencia:', error);
+          console.error("Error al obtener la incidencia:", error);
         }
       };
 
@@ -43,41 +50,47 @@ const TechnicianScanner = () => {
       setScanned(true);
       setMachineId(data);
       setStatus("Máquina escaneada");
-
+  
       const updateIncident = async () => {
         try {
-          const response = await fetch('https://back.incidentstream.cloud/api/incidents/updateIncidentByScan', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              incident_id: incidentId,
-              scanned_machine_id: data,
-            }),
+          const scannedMachineId = parseInt(data, 10);
+          if (isNaN(scannedMachineId)) {
+            console.error("El ID de la máquina escaneada no es un número válido:", data);
+            Alert.alert("Error", "El ID de la máquina escaneada no es un número válido.");
+            setScanned(false);
+            return;
+          }
+  
+          console.log("Scanned Machine ID (converted to integer):", scannedMachineId);
+          console.log("Incident ID:", incidentId);
+  
+          const requestBody = { incident_id: incidentId, scanned_machine_id: scannedMachineId };
+          console.log("Request body:", requestBody);
+  
+          const response = await fetch("https://back.incidentstream.cloud/api/incidents/updateIncidentByScan", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
           });
-
+  
+          const responseData = await response.json();
+          console.log("Response status:", response.status);
+          console.log("Response data:", responseData);
+  
           if (response.ok) {
-            Alert.alert('Éxito', 'La incidencia ha sido actualizada correctamente.');
+            Alert.alert("Éxito", "La incidencia ha sido actualizada correctamente.");
           } else {
-            Alert.alert('Error', 'Hubo un problema al actualizar la incidencia.');
+            Alert.alert("Error", "Hubo un problema al actualizar la incidencia.");
           }
         } catch (error) {
-          console.error('Error al actualizar la incidencia:', error);
-          Alert.alert('Error', 'Hubo un problema al actualizar la incidencia.');
+          console.error("Error al actualizar la incidencia:", error);
+          Alert.alert("Error", "Hubo un problema al actualizar la incidencia.");
         }
       };
-
+  
       updateIncident();
     }
   };
-
-  if (!permission) {
-    return <Text>Solicitando permiso para usar la cámara...</Text>;
-  }
-  if (!permission.granted) {
-    return <Text>No se ha concedido permiso para usar la cámara.</Text>;
-  }
 
   return (
     <View style={styles.container}>
@@ -87,20 +100,30 @@ const TechnicianScanner = () => {
           <Text style={styles.title}>Escáner de Máquinas</Text>
         </View>
 
+        {/* Módulo de escaneo */}
         <View style={styles.scannerContainer}>
-          <CameraView
-            onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-            style={styles.camera}
-            barcodeScannerSettings={{
-              barCodeTypes: ["qr", "ean13", "code128", "upc_a"],
-            }}
-          />
-          {scanned && (
-            <TouchableOpacity onPress={() => setScanned(false)} style={styles.scanButton}>
-              <Text style={styles.scanButtonText}>Escanear de nuevo</Text>
-            </TouchableOpacity>
+          {hasPermission === null ? (
+            <Text>Solicitando permiso de cámara...</Text>
+          ) : hasPermission === false ? (
+            <Text>No tienes acceso a la cámara</Text>
+          ) : (
+            <CameraView
+              onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+              barcodeScannerSettings={{
+                barcodeTypes: allowQR
+                  ? ["qr"]
+                  : ["code128", "ean13", "ean8", "upc_a", "upc_e"],
+              }}
+              style={StyleSheet.absoluteFillObject}
+            />
           )}
         </View>
+
+        {scanned && (
+          <TouchableOpacity style={styles.button} onPress={() => setScanned(false)}>
+            <Text style={styles.buttonText}>Escanear otra máquina</Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.inputContainer}>
           <Ionicons name="barcode-outline" size={24} color="#007AFF" style={styles.inputIcon} />
@@ -143,10 +166,9 @@ const styles = StyleSheet.create({
   content: { flex: 1, padding: 20 },
   header: { flexDirection: "row", alignItems: "center", marginBottom: 30 },
   title: { fontSize: 24, fontWeight: "bold", color: "#333", marginLeft: 10 },
-  scannerContainer: { alignItems: "center", marginBottom: 30, height: 300, justifyContent: 'center', overflow: "hidden" },
-  camera: { width: "100%", height: 300, borderRadius: 10 },
-  scanButton: { backgroundColor: "#007AFF", paddingVertical: 15, borderRadius: 10, alignItems: "center", marginTop: 20 },
-  scanButtonText: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
+  scannerContainer: { height: 250, marginBottom: 20, borderRadius: 10, overflow: "hidden", backgroundColor: "#EEE" },
+  button: { backgroundColor: "#007AFF", padding: 10, borderRadius: 10, alignItems: "center", marginVertical: 10 },
+  buttonText: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
   inputContainer: { flexDirection: "row", alignItems: "center", backgroundColor: "#FFF", borderRadius: 10, paddingHorizontal: 10, marginBottom: 20 },
   inputIcon: { marginRight: 10 },
   input: { flex: 1, height: 50, fontSize: 16, color: "#333" },

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Footer from '../components/Footer';
 import ModalSelector from '../components/ModalSelector';
@@ -12,26 +12,28 @@ const IncidenciasListTechnician = () => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchIncidencias = async () => {
-      try {
-        const user = await AsyncStorage.getItem('user');
-        if (user) {
-          const parsedUser = JSON.parse(user);
-          const userId = parsedUser.user.id;
+  const fetchIncidencias = async () => {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        const userId = parsedUser.user.id;
 
-          const response = await fetch(`https://back.incidentstream.cloud/api/assigned_tasks/findAssignedTasksByUserId?userId=${userId}`);
-          const data = await response.json();
-          setIncidencias(data);
-          setFilteredIncidencias(data);
-        }
-      } catch (error) {
-        console.error('Error al obtener las incidencias:', error);
+        const response = await fetch(`https://back.incidentstream.cloud/api/assigned_tasks/findAssignedTasksByUserId?userId=${userId}`);
+        const data = await response.json();
+        setIncidencias(data);
+        setFilteredIncidencias(data);
       }
-    };
+    } catch (error) {
+      console.error('Error al obtener las incidencias:', error);
+    }
+  };
 
-    fetchIncidencias();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchIncidencias();
+    }, [])
+  );
 
   useEffect(() => {
     filterIncidencias();
