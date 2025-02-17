@@ -68,11 +68,11 @@ export default function Login({ navigation }) {
           entering={FadeInDown.duration(1000).springify()}
           style={styles.formContainer}
         >
-          <Text style={styles.title}>{isLogin ? "Login Now" : "Sign Up"}</Text>
+          <Text style={styles.title}>{isLogin ? "Inicie Sesión" : "Sign Up"}</Text>
           <Text style={styles.subtitle}>
             {isLogin 
-              ? "Please login to continue using our app."
-              : "Please Register with email and sign up to continue using our app."
+              ? "Porfavor inicie sesión para ingresar a la app."
+              : "Porfavor cree una cuenta para ingresar a la app."
             }
           </Text>
 
