@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from '@react-navigation/native';
 import { CameraView, Camera } from "expo-camera";
 import Footer from "../components/Footer";
+import { Dialog } from 'react-native-alert-notification';
 
 const TechnicianScanner = () => {
   const [machineId, setMachineId] = useState("");
@@ -11,11 +12,11 @@ const TechnicianScanner = () => {
   const [scanned, setScanned] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [incidencia, setIncidencia] = useState(null);
+  const [cameraActive, setCameraActive] = useState(false);
   const route = useRoute();
   const incidentId = route?.params?.incidentId;
   const [allowQR, setAllowQR] = useState(true);
 
-  // Solicitar permisos de la cámara
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -25,7 +26,6 @@ const TechnicianScanner = () => {
     getCameraPermissions();
   }, []);
 
-  // Obtener datos de la incidencia
   useEffect(() => {
     if (incidentId) {
       const fetchIncidencia = async () => {
@@ -54,8 +54,14 @@ const TechnicianScanner = () => {
           const scannedMachineId = parseInt(data, 10);
           if (isNaN(scannedMachineId)) {
             console.error("El ID de la máquina escaneada no es un número válido:", data);
-            Alert.alert("Error", "El ID de la máquina escaneada no es un número válido.");
+            Dialog.show({
+              type: 'DANGER',
+              title: 'Error',
+              textBody: 'El ID de la máquina escaneada no es un número válido.',
+              button: 'Cerrar'
+            });
             setScanned(false);
+            setCameraActive(false);
             return;
           }
   
@@ -71,17 +77,28 @@ const TechnicianScanner = () => {
             body: JSON.stringify(requestBody),
           });
   
-          const responseData = await response.json();
-          console.log("Response status:", response.status);
-          console.log("Response data:", responseData);
-  
           if (response.ok) {
-            Alert.alert("Éxito", "La incidencia ha sido actualizada correctamente.");
-          } else {
-            Alert.alert("Error", "Hubo un problema al actualizar la incidencia.");
+            Dialog.show({
+              type: 'SUCCESS',
+              title: 'Éxito',
+              textBody: 'La incidencia ha sido actualizada correctamente.',
+              button: 'Cerrar'
+            });
+            setCameraActive(false);
             setScanned(false);
+          } else {
+            Dialog.show({
+              type: 'DANGER',
+              title: 'Error',
+              textBody: 'Hubo un problema al actualizar la incidencia.',
+              button: 'Cerrar'
+            });
+            setScanned(false);
+            setCameraActive(false);
           }
         } catch (error) {
+          console.error("Error al actualizar la incidencia:", error);
+          setCameraActive(false);
         }
       };
   
@@ -97,27 +114,28 @@ const TechnicianScanner = () => {
           <Text style={styles.title}>Escáner de Máquinas</Text>
         </View>
 
-        {/* Módulo de escaneo */}
         <View style={styles.scannerContainer}>
           {hasPermission === null ? (
             <Text>Solicitando permiso de cámara...</Text>
           ) : hasPermission === false ? (
             <Text>No tienes acceso a la cámara</Text>
           ) : (
-            <CameraView
-              onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-              barcodeScannerSettings={{
-                barcodeTypes: allowQR
-                  ? ["qr"]
-                  : ["code128", "ean13", "ean8", "upc_a", "upc_e"],
-              }}
-              style={StyleSheet.absoluteFillObject}
-            />
+            cameraActive && (
+              <CameraView
+                onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+                barcodeScannerSettings={{
+                  barcodeTypes: allowQR
+                    ? ["qr"]
+                    : ["code128", "ean13", "ean8", "upc_a", "upc_e"],
+                }}
+                style={StyleSheet.absoluteFillObject}
+              />
+            )
           )}
         </View>
 
         {scanned && (
-          <TouchableOpacity style={styles.button} onPress={() => setScanned(false)}>
+          <TouchableOpacity style={styles.button} onPress={() => { setScanned(false); setCameraActive(false); }}>
             <Text style={styles.buttonText}>Escanear otra máquina</Text>
           </TouchableOpacity>
         )}

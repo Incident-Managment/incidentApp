@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { AlertNotificationRoot } from 'react-native-alert-notification';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './pages/Login';
 import Home from './pages/Home';
@@ -14,6 +15,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
+      <AlertNotificationRoot>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen 
           name="Login" 
@@ -85,6 +87,7 @@ export default function App() {
           }}
         />
       </Stack.Navigator>
+      </AlertNotificationRoot>
     </NavigationContainer>
   );
 }
