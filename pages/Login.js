@@ -100,7 +100,7 @@ export default function Login({ navigation }) {
 
                 <View style={[styles.inputContainer, touched.password && errors.password && styles.inputError]}>
                   <TextInput
-                    placeholder="Password"
+                    placeholder="Contraseña: ********"
                     style={styles.input}
                     onChangeText={handleChange("password")}
                     onBlur={handleBlur("password")}
@@ -139,27 +139,16 @@ export default function Login({ navigation }) {
                   <Text style={styles.buttonText}>
                     {isSubmitting 
                       ? "Processing..." 
-                      : isLogin ? "Login" : "Sign up"
+                      : isLogin ? "Iniciar Sesión" : "Sign up"
                     }
                   </Text>
                 </TouchableOpacity>
 
                 {isLogin && (
                   <TouchableOpacity style={styles.forgotPassword}>
-                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                    <Text style={styles.forgotPasswordText}></Text>
                   </TouchableOpacity>
                 )}
-
-                <View style={styles.toggleContainer}>
-                  <Text style={styles.toggleText}>
-                    {isLogin ? "Don't have an account? " : "Already have an account? "}
-                  </Text>
-                  <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
-                    <Text style={styles.toggleButton}>
-                      {isLogin ? "Sign up" : "Login"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
               </View>
             )}
           </Formik>

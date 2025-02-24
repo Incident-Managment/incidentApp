@@ -43,68 +43,81 @@ const TechnicianScanner = () => {
     }
   }, [incidentId]);
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    if (!scanned) {
-      setScanned(true);
-      setMachineId(data);
-      setStatus("Máquina escaneada");
+  const handleBarCodeScanned = async ({ type, data }) => {
+    if (scanned) return; // Evita escanear más de una vez
   
-      const updateIncident = async () => {
-        try {
-          const scannedMachineId = parseInt(data, 10);
-          if (isNaN(scannedMachineId)) {
-            console.error("El ID de la máquina escaneada no es un número válido:", data);
-            Dialog.show({
-              type: 'DANGER',
-              title: 'Error',
-              textBody: 'El ID de la máquina escaneada no es un número válido.',
-              button: 'Cerrar'
-            });
-            setScanned(false);
-            setCameraActive(false);
-            return;
-          }
+    setScanned(true);
+    setMachineId(data);
+    setStatus("Máquina escaneada");
   
-          console.log("Scanned Machine ID (converted to integer):", scannedMachineId);
-          console.log("Incident ID:", incidentId);
+    try {
+      const scannedMachineId = parseInt(data, 10);
+      if (isNaN(scannedMachineId)) {
+        console.error("El ID de la máquina escaneada no es válido:", data);
+        Dialog.show({
+          type: 'DANGER',
+          title: 'Error',
+          textBody: 'El ID de la máquina escaneada no es válido.',
+          button: 'Cerrar'
+        });
+        return;
+      }
   
-          const requestBody = { incident_id: incidentId, scanned_machine_id: scannedMachineId };
-          console.log("Request body:", requestBody);
+      const requestBody = { incident_id: incidentId, scanned_machine_id: scannedMachineId };
   
-          const response = await fetch("https://back.incidentstream.cloud/api/incidents/updateIncidentByScan", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestBody),
-          });
+      const response = await fetch("https://back.incidentstream.cloud/api/incidents/updateIncidentByScan", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
   
-          if (response.ok) {
-            Dialog.show({
-              type: 'SUCCESS',
-              title: 'Éxito',
-              textBody: 'La incidencia ha sido actualizada correctamente.',
-              button: 'Cerrar'
-            });
-            setCameraActive(false);
-            setScanned(false);
-          } else {
-            Dialog.show({
-              type: 'DANGER',
-              title: 'Error',
-              textBody: 'Hubo un problema al actualizar la incidencia.',
-              button: 'Cerrar'
-            });
-            setScanned(false);
-            setCameraActive(false);
-          }
-        } catch (error) {
-          console.error("Error al actualizar la incidencia:", error);
-          setCameraActive(false);
-        }
-      };
-  
-      updateIncident();
+      if (response.ok) {
+        console.log("Incidencia actualizada correctamente:", requestBody);
+        Dialog.show({
+          type: 'SUCCESS',
+          title: 'Éxito',
+          textBody: 'La incidencia ha sido actualizada correctamente.',
+          button: 'Cerrar'
+        });
+      } else {
+        Dialog.show({
+          type: 'DANGER',
+          title: 'Error',
+          textBody: 'Hubo un problema al actualizar la incidencia o el ID de la máquina escaneada no es válido.',
+          button: 'Cerrar'
+        });
+      }
+    } catch (error) {
+      console.error("Error al actualizar la incidencia:", error);
     }
   };
+  
+  // Si quieres permitir escanear otra vez manualmente:
+  const resetScanner = () => {
+    setScanned(false);
+    setMachineId("");
+    setStatus("Pendiente");
+  };
+  
+  const requestCameraPermissionAgain = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    setHasPermission(status === "granted");
+    if (status !== "granted") {
+      Alert.alert(
+        "Permiso de cámara requerido",
+        "Necesitamos acceso a la cámara para escanear códigos QR. Por favor, concede el permiso.",
+        [{ text: "OK", onPress: requestCameraPermissionAgain }]
+      );
+    }
+  };
+
+  if (hasPermission === null) {
+    return <Text>Solicitando permiso para usar la cámara...</Text>;
+  }
+  if (hasPermission === false) {
+    requestCameraPermissionAgain();
+    return <Text>No se ha concedido permiso para usar la cámara.</Text>;
+  }
 
   return (
     <View style={styles.container}>
@@ -134,7 +147,7 @@ const TechnicianScanner = () => {
 
         {scanned && (
           <TouchableOpacity style={styles.button} onPress={() => { setScanned(false); setCameraActive(false); }}>
-            <Text style={styles.buttonText}>Escanear otra máquina</Text>
+            <Text style={styles.buttonText}>Escanear otra véz</Text>
           </TouchableOpacity>
         )}
 
