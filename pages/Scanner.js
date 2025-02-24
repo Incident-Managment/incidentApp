@@ -120,7 +120,6 @@ const TechnicianScanner = () => {
           ) : hasPermission === false ? (
             <Text>No tienes acceso a la cámara</Text>
           ) : (
-            cameraActive && (
               <CameraView
                 onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
                 barcodeScannerSettings={{
@@ -130,7 +129,6 @@ const TechnicianScanner = () => {
                 }}
                 style={StyleSheet.absoluteFillObject}
               />
-            )
           )}
         </View>
 
