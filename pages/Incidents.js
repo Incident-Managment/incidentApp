@@ -16,6 +16,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { Dialog } from 'react-native-alert-notification';
 
 const EnhancedIncidentForm = () => {
   const [title, setTitle] = useState("");
@@ -106,12 +107,27 @@ const EnhancedIncidentForm = () => {
         },
       });
       if (response.status === 200) {
-        console.log("Incidencia creada exitosamente");
+        Dialog.show({
+          type: 'success',
+          title: 'Éxito',
+          textBody: 'Incidencia creada exitosamente',
+          button: 'Cerrar',
+        });
       } else {
-        console.error("Error al crear la incidencia:", response.data);
+        Dialog.show({
+          type: 'danger',
+          title: 'Error',
+          textBody: `Error al crear la incidencia: ${response.data}`,
+          button: 'Cerrar',
+        });
       }
     } catch (error) {
-      console.error("Error al crear la incidencia:", error.response ? error.response.data : error.message);
+      Dialog.show({
+        type: 'danger',
+        title: 'Error',
+        textBody: `Error al crear la incidencia: ${error.response ? error.response.data : error.message}`,
+        button: 'Cerrar',
+      });
     }
   };
 
