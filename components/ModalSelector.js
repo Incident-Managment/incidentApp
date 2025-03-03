@@ -14,6 +14,7 @@ const ModalSelector = ({
   selectedValue,
   onValueChange,
   placeholder,
+  disabled, // Añadir la propiedad disabled
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -22,8 +23,9 @@ const ModalSelector = ({
   return (
     <View>
       <TouchableOpacity
-        style={styles.selector}
-        onPress={() => setModalVisible(true)}
+        style={[styles.selector, disabled && styles.disabledSelector]} // Aplicar estilo si está deshabilitado
+        onPress={() => !disabled && setModalVisible(true)} // Solo abrir modal si no está deshabilitado
+        disabled={disabled} // Deshabilitar el botón si está deshabilitado
       >
         <Text style={selectedValue ? styles.selectorText : styles.placeholderText}>
           {selectedOption ? selectedOption.label : placeholder}
@@ -40,7 +42,7 @@ const ModalSelector = ({
             <Text style={styles.modalTitle}>{placeholder}</Text>
             <FlatList
               data={options}
-              keyExtractor={(item) => item.value}
+              keyExtractor={(item) => item.value.toString()} // Usar item.value como clave única
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[
@@ -85,6 +87,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     justifyContent: 'center',
     backgroundColor: '#fff',
+  },
+  disabledSelector: {
+    backgroundColor: '#f0f0f0', // Cambiar el color de fondo si está deshabilitado
+    borderColor: '#ccc', // Cambiar el color del borde si está deshabilitado
   },
   selectorText: {
     fontSize: 16,
