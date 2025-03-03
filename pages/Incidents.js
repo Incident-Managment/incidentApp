@@ -108,14 +108,14 @@ const EnhancedIncidentForm = () => {
       });
       if (response.status === 200) {
         Dialog.show({
-          type: 'success',
+          type: 'SUCCESS',
           title: 'Éxito',
           textBody: 'Incidencia creada exitosamente',
           button: 'Cerrar',
         });
       } else {
         Dialog.show({
-          type: 'danger',
+          type: 'DANGER',
           title: 'Error',
           textBody: `Error al crear la incidencia: ${response.data}`,
           button: 'Cerrar',
@@ -123,7 +123,7 @@ const EnhancedIncidentForm = () => {
       }
     } catch (error) {
       Dialog.show({
-        type: 'danger',
+        type: 'DANGER',
         title: 'Error',
         textBody: `Error al crear la incidencia: ${error.response ? error.response.data : error.message}`,
         button: 'Cerrar',
