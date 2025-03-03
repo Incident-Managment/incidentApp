@@ -21,14 +21,12 @@ import { Dialog } from 'react-native-alert-notification';
 const EnhancedIncidentForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
+  const [status] = useState(1); // Estado predeterminado "ESPERA" (id 1)
   const [priority, setPriority] = useState("");
-  const [category, setCategory] = useState("");
+  const [category] = useState(3); // Categoría predeterminada "PRODUCCIÓN" (id 3)
   const [phase, setPhase] = useState("");
   const [image, setImage] = useState(null);
-  const [statusOptions, setStatusOptions] = useState([]);
   const [priorityOptions, setPriorityOptions] = useState([]);
-  const [categoryOptions, setCategoryOptions] = useState([]);
   const [phaseOptions, setPhaseOptions] = useState([]);
   const [company, setCompany] = useState("");
   const [machine, setMachines] = useState("");
@@ -46,9 +44,7 @@ const EnhancedIncidentForm = () => {
           setUserId(parsedUser.user.id);
 
           const endpoints = [
-            { url: `statuses/getStatuses`, setter: setStatusOptions, useCompanyId: false }, // Cambiado a `statuses`
             { url: `prioritiesByCompany`, setter: setPriorityOptions, useCompanyId: true },
-            { url: `categoriesByCompany`, setter: setCategoryOptions, useCompanyId: true },
             { url: `productionPhasesByCompany`, setter: setPhaseOptions, useCompanyId: true },
             { url: `machines/getMachinesByCompany`, setter: setMachineOptions, useCompanyId: true },
           ];
@@ -179,9 +175,7 @@ const EnhancedIncidentForm = () => {
               </View>
           ))}
 
-          {[{ label: "Status de la incidencia", value: status, setter: setStatus, options: statusOptions },
-            { label: "Prioridad de la incidencia", value: priority, setter: setPriority, options: priorityOptions },
-            { label: "Categoría de la incidencia", value: category, setter: setCategory, options: categoryOptions },
+          {[{ label: "Prioridad de la incidencia", value: priority, setter: setPriority, options: priorityOptions },
             { label: "Fase de la producción", value: phase, setter: setPhase, options: phaseOptions },
             { label: "Máquina", value: machine, setter: setMachines, options: machineOptions }]
             .map(({ label, value, setter, options }, index) => (
