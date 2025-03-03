@@ -45,7 +45,7 @@ const TechnicianScanner = () => {
   }, [incidentId]);
 
   const handleBarCodeScanned = async ({ type, data }) => {
-    if (scanned) return;
+    if (scanned) return;  // Evita escanear más de una vez.
 
     setScanned(true);
     setCameraActive(false); // Desactivar la cámara después de escanear
@@ -94,7 +94,6 @@ const TechnicianScanner = () => {
     }
   };
 
-  // Para reiniciar el escáner
   const resetScanner = () => {
     setScanned(false);
     setCameraActive(true); // Reactivar la cámara
@@ -102,7 +101,6 @@ const TechnicianScanner = () => {
     setStatus("Pendiente");
   };
 
-  // Solicitar permisos de cámara
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -128,7 +126,7 @@ const TechnicianScanner = () => {
         <View style={styles.scannerContainer}>
           {cameraActive && (
             <CameraView
-              onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+              onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} // Solo escanear si no ha sido escaneado antes
               barcodeScannerSettings={{
                 barcodeTypes: allowQRRef.current ? ["qr"] : ["code128", "ean13", "ean8", "upc_a", "upc_e"],
               }}
