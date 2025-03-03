@@ -18,6 +18,8 @@ const TechnicianScanner = () => {
   const [allowQR, setAllowQR] = useState(true);
   const allowQRRef = useRef(allowQR);
 
+  const lastScanTimeRef = useRef(null);
+
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -45,10 +47,17 @@ const TechnicianScanner = () => {
   }, [incidentId]);
 
   const handleBarCodeScanned = async ({ type, data }) => {
-    if (scanned) return;  // Evita escanear más de una vez.
+    const now = Date.now();
+    if (lastScanTimeRef.current && now - lastScanTimeRef.current < 2000) {
+      console.log("Escaneo ignorado debido al debounce.");
+      return;
+    }
+    lastScanTimeRef.current = now;
+
+    if (scanned) return;
 
     setScanned(true);
-    setCameraActive(false); // Desactivar la cámara después de escanear
+    setCameraActive(false);
     setMachineId(data);
     setStatus("Máquina escaneada");
 
