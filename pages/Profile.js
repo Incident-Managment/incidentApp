@@ -97,7 +97,7 @@ const Profile = () => {
     container: {
       flexGrow: 1,
       padding: 30,
-      backgroundColor: '#f5efe7',
+      backgroundColor: '#F9FAFB',
       alignItems: 'center',
       paddingTop: 90,
     },
@@ -105,11 +105,11 @@ const Profile = () => {
       fontSize: 24,
       fontWeight: 'bold',
       marginVertical: 20,
-      color: '#3d3d3d',
+      color: '#1F2937',
     },
     card: {
       width: '100%',
-      backgroundColor: '#fffaec',
+      backgroundColor: '#ffffff',
       borderRadius: 15,
       padding: 20,
       alignItems: 'center',
@@ -137,11 +137,11 @@ const Profile = () => {
       fontSize: 20,
       fontWeight: 'bold',
       marginBottom: 5,
-      color: '#3d3d3d',
+      color: '#1F2937',
     },
     role: {
       fontSize: 16,
-      color: '#757575',
+      color: '#6b7280',
       marginBottom: 20,
     },
     infoContainer: {
@@ -150,14 +150,14 @@ const Profile = () => {
     },
     infoTitle: {
       fontSize: 14,
-      color: '#757575',
+      color: '#6b7280',
       marginBottom: 5,
     },
     infoValue: {
       fontSize: 16,
       fontWeight: '500',
       marginBottom: 10,
-      color: '#3d3d3d',
+      color: '#1F2937',
     },
     actions: {
       flexDirection: 'row',
@@ -167,18 +167,18 @@ const Profile = () => {
     logoutButton: {
       marginTop: 20,
       padding: 15,
-      backgroundColor: '#578e7e',
+      backgroundColor: '#2563EB',
       borderRadius: 8,
       alignItems: 'center',
       width: '100%',
     },
     logoutButtonText: {
-      color: '#3d3d3d',
+      color: '#ffffff',
       fontSize: 19,
       fontWeight: 'bold',
     },
     icon: {
-      color: "#D8C4B6",
+      color: "#3d3d3d",
     },
   });
 

@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   icon: {
-    color: "#578e7e",
+    color: "#3d3d3d",
   },
 });
 
