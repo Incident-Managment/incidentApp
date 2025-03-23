@@ -1,24 +1,98 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
-import { LineChart, BarChart, PieChart } from "react-native-chart-kit";
+import { BarChart, PieChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const screenWidth = Dimensions.get("window").width;
 
 const Home = () => {
+  const [companyId, setCompanyId] = useState(null);
+  const [incidents, setIncidents] = useState(0);
+  const [resolved, setResolved] = useState(0);
+  const [averageTime, setAverageTime] = useState(0);
+  const [efficiency, setEfficiency] = useState(0);
+  const [monthlyData, setMonthlyData] = useState([]);
+
+  useEffect(() => {
+    const fetchCompanyId = async () => {
+      try {
+        const user = await AsyncStorage.getItem("user");
+        console.log(user);
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          const companyId = parsedUser.user.company.id || "Compañía no disponible";
+          setCompanyId(companyId);
+        }
+      } catch (error) {
+        console.error('Error fetching company ID:', error);
+      }
+    };
+
+    const fetchData = async () => {
+      if (companyId) {
+        try {
+          const incidentsResponse = await axios.get(`https://back.incidentstream.cloud/api/incidents/countIncidentsByCompany?companyId=${companyId}`);
+          setIncidents(incidentsResponse.data.count);
+
+          const resolvedResponse = await axios.get(`https://back.incidentstream.cloud/api/incidents/countIncidentsResolvedByCompany?companyId=${companyId}`);
+          setResolved(resolvedResponse.data.count);
+
+          const averageTimeResponse = await axios.get(`https://back.incidentstream.cloud/api/incidents/averageResolutionTimeByCompany?companyId=${companyId}`);
+          setAverageTime(averageTimeResponse.data.averageResolutionTime);
+
+          const efficiencyResponse = await axios.get(`https://back.incidentstream.cloud/api/incidents/incidentEfficiencyByCompany?companyId=${companyId}`);
+          setEfficiency(efficiencyResponse.data.productionEfficiency);
+
+          const monthlyIncidentsResponse = await axios.get(`https://back.incidentstream.cloud/api/incidents/incidentsByStatusMonthly?companyId=${companyId}`);
+          const incidentsData2025 = monthlyIncidentsResponse.data.incidentsData["2025"];
+          const formattedData = Object.keys(incidentsData2025).map(month => {
+            const monthly = incidentsData2025[month].monthly;
+            return {
+              month,
+              ...monthly
+            };
+          });
+          setMonthlyData(formattedData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    };
+
+    fetchCompanyId();
+    fetchData();
+  }, [companyId]);
+
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: monthlyData.map(item => item.month),
     datasets: [
       {
-        data: [20, 45, 28, 80, 99, 43],
+        data: monthlyData.map(item => item["En Progreso"] || 0),
         color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
         strokeWidth: 2,
       },
+      {
+        data: monthlyData.map(item => item["En Espera"] || 0),
+        color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`,
+        strokeWidth: 2,
+      },
+      {
+        data: monthlyData.map(item => item["Resuelto"] || 0),
+        color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
+        strokeWidth: 2,
+      },
+      {
+        data: monthlyData.map(item => item["Cancelado"] || 0),
+        color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+        strokeWidth: 2,
+      },
     ],
-    legend: ["Rainy Days"],
+    legend: ["En Progreso", "En Espera", "Resuelto", "Cancelado"],
   };
 
   const pieData = [
@@ -70,41 +144,38 @@ const Home = () => {
         <View style={styles.analyticsContainer}>
           <View style={styles.analyticsCard}>
             <FontAwesome name="building" size={24} color="#4CAF50" />
-            <Text style={styles.analyticsLabel}>Companies</Text>
-            <Text style={styles.analyticsValue}>5</Text>
+            <Text style={styles.analyticsLabel}>Incidencias</Text>
+            <Text style={styles.analyticsValue}>{incidents}</Text>
           </View>
           <View style={styles.analyticsCard}>
             <FontAwesome name="cogs" size={24} color="#FF9800" />
-            <Text style={styles.analyticsLabel}>Machine Types</Text>
-            <Text style={styles.analyticsValue}>3</Text>
+            <Text style={styles.analyticsLabel}>Resueltas</Text>
+            <Text style={styles.analyticsValue}>{resolved}</Text>
           </View>
           <View style={styles.analyticsCard}>
             <FontAwesome name="users" size={24} color="#2196F3" />
-            <Text style={styles.analyticsLabel}>User Roles</Text>
-            <Text style={styles.analyticsValue}>5</Text>
+            <Text style={styles.analyticsLabel}>Tiempo Promedio</Text>
+            <Text style={styles.analyticsValue}>{averageTime.toFixed(2)} h</Text>
           </View>
           <View style={styles.analyticsCard}>
             <FontAwesome name="user" size={24} color="#9C27B0" />
-            <Text style={styles.analyticsLabel}>Users</Text>
-            <Text style={styles.analyticsValue}>5</Text>
+            <Text style={styles.analyticsLabel}>Eficiencia</Text>
+            <Text style={styles.analyticsValue}>{efficiency.toFixed(2)}%</Text>
           </View>
         </View>
 
-
-        {/* Line Chart Section */}
+        {/* Bar Chart Section */}
         <View style={styles.graphContainer}>
-          <Text style={styles.graphTitle}>Monthly Incidents</Text>
-          <LineChart
+          <Text style={styles.graphTitle}>Incident Priorities</Text>
+          <BarChart
             data={data}
             width={screenWidth - 40}
             height={220}
             chartConfig={chartConfig}
-            bezier
             style={styles.chart}
           />
         </View>
 
-        
         {/* Graph Section */}
         <View style={styles.graphContainer}>
           <Text style={styles.graphTitle}>Incident Statuses</Text>
@@ -119,28 +190,6 @@ const Home = () => {
             paddingLeft={"15"}
             style={styles.chart}
           />
-        </View>
-
-
-        {/* Bar Chart Section */}
-        <View style={styles.graphContainer}>
-          <Text style={styles.graphTitle}>Incident Priorities</Text>
-          <BarChart
-            data={data}
-            width={screenWidth - 40}
-            height={220}
-            chartConfig={chartConfig}
-            style={styles.chart}
-          />
-        </View>
-
-        {/* Progress Bar Section */}
-        <View style={styles.graphContainer}>
-          <Text style={styles.graphTitle}>Project Progress</Text>
-          <View style={styles.progressBar}>
-            <View style={styles.progressBarFill} />
-          </View>
-          <Text style={styles.progressText}>75% Complete</Text>
         </View>
       </ScrollView>
 
