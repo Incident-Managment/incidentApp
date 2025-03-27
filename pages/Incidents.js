@@ -85,9 +85,7 @@ const EnhancedIncidentForm = () => {
       production_phase_id: phase,
       machine_id: machine,
       company_id: company,
-      user_id: userId,
-      creation_date: new Date().toISOString(),
-      update_date: new Date().toISOString(),
+      user_id: userId
     };
 
     try {
