@@ -175,22 +175,6 @@ const Home = () => {
             style={styles.chart}
           />
         </View>
-
-        {/* Graph Section */}
-        <View style={styles.graphContainer}>
-          <Text style={styles.graphTitle}>Incident Statuses</Text>
-          <Text style={styles.graphSubtitle}>Status Distribution</Text>
-          <PieChart
-            data={pieData}
-            width={screenWidth - 40}
-            height={220}
-            chartConfig={chartConfig}
-            accessor={"population"}
-            backgroundColor={"transparent"}
-            paddingLeft={"15"}
-            style={styles.chart}
-          />
-        </View>
       </ScrollView>
 
       <Footer />
