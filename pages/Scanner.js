@@ -5,6 +5,7 @@ import { useRoute } from '@react-navigation/native';
 import { CameraView, Camera } from "expo-camera";
 import Footer from "../components/Footer";
 import { Dialog } from 'react-native-alert-notification';
+import CommentsTechnique from "../components/CommentsTecnique"; // Importa el componente de comentarios
 
 const TechnicianScanner = () => {
   const [machineId, setMachineId] = useState("");
@@ -13,6 +14,7 @@ const TechnicianScanner = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [incidencia, setIncidencia] = useState(null);
   const [cameraActive, setCameraActive] = useState(true);
+  const [showCommentModal, setShowCommentModal] = useState(false); // Estado para el modal de comentarios
   const route = useRoute();
   const incidentId = route?.params?.incidentId;
   const [allowQR, setAllowQR] = useState(true);
@@ -84,12 +86,7 @@ const TechnicianScanner = () => {
 
       if (response.ok) {
         console.log("Incidencia actualizada correctamente:", requestBody);
-        Dialog.show({
-          type: 'SUCCESS',
-          title: 'Éxito',
-          textBody: 'La incidencia ha sido actualizada correctamente.',
-          button: 'Cerrar'
-        });
+        setShowCommentModal(true);
       } else {
         Dialog.show({
           type: 'DANGER',
@@ -110,12 +107,10 @@ const TechnicianScanner = () => {
     setStatus("Pendiente");
   };
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
+  const handleCommentAdded = () => {
+    setShowCommentModal(false); // Cerrar el modal
+    resetScanner(); // Reactivar la cámara y reiniciar el escáner
+  };
 
   if (hasPermission === null) {
     return <Text>Solicitando permiso para usar la cámara...</Text>;
@@ -183,6 +178,14 @@ const TechnicianScanner = () => {
         )}
       </ScrollView>
       <Footer />
+
+      {/* Modal para agregar comentarios */}
+      <CommentsTechnique
+        visible={showCommentModal}
+        onClose={() => setShowCommentModal(false)}
+        incidentId={incidentId}
+        onCommentAdded={handleCommentAdded}
+      />
     </View>
   );
 };

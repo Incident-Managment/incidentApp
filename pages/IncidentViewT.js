@@ -89,6 +89,7 @@ const IncidenciasListTechnician = () => {
           options={[
             { label: 'Todos los Estados', value: '' },
             { label: 'Resuelto', value: 'Resuelto' },
+            { label: 'En Progreso', value: 'En Progreso' },
             { label: 'En Espera', value: 'En Espera' },
           ]}
           selectedValue={selectedStatus}
