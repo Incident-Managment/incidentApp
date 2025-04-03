@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, ScrollView } from "react-native";
-import { BarChart, PieChart } from "react-native-chart-kit";
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { BarChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
@@ -12,6 +12,7 @@ const screenWidth = Dimensions.get("window").width;
 
 const Home = () => {
   const [companyId, setCompanyId] = useState(null);
+  const [roleId, setRoleId] = useState(null);
   const [incidents, setIncidents] = useState(0);
   const [resolved, setResolved] = useState(0);
   const [averageTime, setAverageTime] = useState(0);
@@ -19,22 +20,23 @@ const Home = () => {
   const [monthlyData, setMonthlyData] = useState([]);
 
   useEffect(() => {
-    const fetchCompanyId = async () => {
+    const fetchUserData = async () => {
       try {
         const user = await AsyncStorage.getItem("user");
-        console.log(user);
         if (user) {
           const parsedUser = JSON.parse(user);
           const companyId = parsedUser.user.company.id || "Compañía no disponible";
+          const roleId = parsedUser.user.role.id;
           setCompanyId(companyId);
+          setRoleId(roleId);
         }
       } catch (error) {
-        console.error('Error fetching company ID:', error);
+        console.error('Error fetching user data:', error);
       }
     };
 
     const fetchData = async () => {
-      if (companyId) {
+      if (companyId && roleId !== 4) {
         try {
           const incidentsResponse = await axios.get(`https://back.incidentstream.cloud/api/incidents/countIncidentsByCompany?companyId=${companyId}`);
           setIncidents(incidentsResponse.data.count);
@@ -64,7 +66,7 @@ const Home = () => {
       }
     };
 
-    fetchCompanyId();
+    fetchUserData();
     fetchData();
   }, [companyId]);
 
@@ -95,30 +97,6 @@ const Home = () => {
     legend: ["En Progreso", "En Espera", "Resuelto", "Cancelado"],
   };
 
-  const pieData = [
-    {
-      name: "Alta",
-      population: 10,
-      color: "rgba(255, 0, 0, 1)",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-    {
-      name: "Media",
-      population: 20,
-      color: "rgba(255, 165, 0, 1)",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-    {
-      name: "Baja",
-      population: 30,
-      color: "rgba(0, 255, 0, 1)",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15,
-    },
-  ];
-
   const chartConfig = {
     backgroundGradientFrom: "#f5f5f5",
     backgroundGradientTo: "#f5f5f5",
@@ -134,6 +112,22 @@ const Home = () => {
     },
   };
 
+  if (roleId === 4) {
+      return (
+        <View style={styles.container}>
+          <Header />
+          <View style={styles.welcomeContainer}>
+            <Text style={styles.welcomeTitle}>👨‍🔧 Bienvenido Técnico ⚒️</Text>
+            <Text style={styles.welcomeText}>
+              Esta aplicación te permite escanear máquinas, gestionar incidencias y actualizar su estado. 
+              Usa el escáner para identificar máquinas y resolver problemas rápidamente.
+            </Text>
+          </View>
+          <Footer />
+        </View>
+      );
+    }
+  
   return (
     <View style={styles.container}>
       <Header />
@@ -234,33 +228,42 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
-  graphSubtitle: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 8,
-  },
   chart: {
     marginVertical: 8,
     borderRadius: 16,
   },
-  progressBar: {
-    height: 20,
-    width: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    width: '75%',
-    backgroundColor: '#4CAF50',
-  },
-  progressText: {
-    fontSize: 14,
-    color: '#333',
-    marginTop: 8,
-    textAlign: 'center',
-  },
+  welcomeContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 20,
+      backgroundColor: "#f9f9f9", // Fondo suave para mejor contraste
+    },
+    welcomeTitle: {
+      fontSize: 28, // Tamaño más grande para destacar
+      fontWeight: "bold",
+      color: "#222", // Color más oscuro para mejor legibilidad
+      marginBottom: 20, // Espaciado más amplio
+      textAlign: "center", // Centrado para mejor alineación
+    },
+    welcomeText: {
+      fontSize: 18, // Tamaño ligeramente más grande
+      color: "#444", // Color más accesible
+      textAlign: "center",
+      lineHeight: 26, // Mejor separación entre líneas
+      paddingHorizontal: 10, // Espaciado interno para evitar bordes
+    },
+    welcomeCard: {
+      width: "90%", // Tarjeta que contiene el texto
+      padding: 20,
+      backgroundColor: "#fff", // Fondo blanco para contraste
+      borderRadius: 12, // Bordes redondeados
+      shadowColor: "#000", // Sombra para profundidad
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 3, // Sombra para Android
+    },
 });
 
 export default Home;
