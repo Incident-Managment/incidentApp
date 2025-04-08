@@ -42,14 +42,14 @@ const EnhancedIncidentForm = () => {
           setUserId(parsedUser.user.id);
 
           const endpoints = [
-            { url: `prioritiesByCompany`, setter: setPriorityOptions },
-            { url: `productionPhasesByCompany`, setter: setPhaseOptions },
-            { url: `machines/getMachinesByCompany`, setter: setMachineOptions },
-            { url: `categoriesByCompany`, setter: setCategoryOptions },
+            { url: `priorities/find`, setter: setPriorityOptions },
+            { url: `productionPhasesByCompany?companyId=${companyId}`, setter: setPhaseOptions },
+            { url: `machines/getMachinesByCompany?companyId=${companyId}`, setter: setMachineOptions },
+            { url: `categories/find`, setter: setCategoryOptions },
           ];
 
           for (const { url, setter } of endpoints) {
-            const apiUrl = `https://back.incidentstream.cloud/api/${url}?companyId=${companyId}`;
+            const apiUrl = `https://back.incidentstream.cloud/api/${url}`;
             const response = await axios.get(apiUrl);
             setter(response.data.map(option => ({
               label: option.name,
